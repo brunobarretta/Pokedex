@@ -1,3 +1,6 @@
+let shiny = false;
+let img = "front_default";
+
 const getPokemonUrl = id => `https://pokeapi.co/api/v2/pokemon/${id}`
 
 const generatePokemonPromises = () => Array(251).fill().map((_, index) =>
@@ -6,12 +9,11 @@ const generatePokemonPromises = () => Array(251).fill().map((_, index) =>
 
 const generateHTML = pokemons => {
   return pokemons.reduce((accumulator, { name, id, types, sprites }) => {
-    const elementTypes = types.map(typeInfo => typeInfo.type.name)
+    const elementTypes = types.map(typeInfo => typeInfo.type.name);
 
-    console.log(pokemons)
     accumulator += `
       <li class="card ${elementTypes[0]}">
-      <img class="card-image alt="${name}" src="${sprites.other["official-artwork"].front_default}"</img>
+      <img class="card-image" alt="${name}" src="${sprites.other.home[img]}"</img>
         <h2 class="card-title">${id}. ${name}</h2>
         <p class="card-subtitle">${elementTypes.join(" | ")}</p>
       </li>
@@ -27,6 +29,27 @@ const insertPokemonsIntoPage = pokemons => {
 
 const pokemonPromises = generatePokemonPromises()
 
+function showShiny() {
+  if (this.shiny === true) {
+    this.shiny = false;
+    var pokemons = document.querySelectorAll(".card-image");
+    for (let i = 0; i <= pokemons.length; i++) {
+      var image = pokemons[i],src = pokemons[i].src
+      image.src = src.replace("home/shiny/", "home/");
+    }
+  } else {
+    this.shiny = true;
+    var pokemons = document.querySelectorAll(".card-image");
+    for (let i = 0; i <= pokemons.length; i++) {
+      var image = pokemons[i],src = pokemons[i].src
+      image.src = src.replace("home/","home/shiny/");
+    }
+  }
+}
+
 Promise.all(pokemonPromises)
   .then(generateHTML)
   .then(insertPokemonsIntoPage)
+
+
+
